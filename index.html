@@ -4,78 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로또 번호 추천기</title>
-    <!-- Tailwind CSS (스타일링을 위해 사용) -->
+    <!-- Tailwind CSS 및 다크모드 설정 -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* 공이 나타날 때의 애니메이션 효과 */
-        @keyframes popIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.5) translateY(20px);
-            }
-            70% {
-                transform: scale(1.1) translateY(-5px);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
         }
-
-        .ball {
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            opacity: 0; /* 초기 상태는 투명하게 */
-            position: relative;
-            /* 3D 입체감을 위한 그림자 효과 적용 */
-            box-shadow: 
-                inset -5px -5px 10px rgba(0,0,0,0.3), 
-                inset 3px 3px 8px rgba(255,255,255,0.6),
-                2px 4px 6px rgba(0,0,0,0.3);
-        }
-
-        /* 텍스트 가독성 향상을 위한 내부 요소 */
-        .ball span {
-            position: relative;
-            z-index: 10;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
-        }
-
-        /* 공 색상 정의 (3D 그라데이션 적용) */
-        .color-yellow { background: radial-gradient(circle at 30% 30%, #ffe359, #fbc400, #c49400); color: #222; }
-        .color-yellow span { text-shadow: 1px 1px 0px rgba(255,255,255,0.6); }
-        .color-blue { background: radial-gradient(circle at 30% 30%, #8de0ff, #69c8f2, #248abf); }
-        .color-red { background: radial-gradient(circle at 30% 30%, #ff9e9e, #ff7272, #cc2929); }
-        .color-gray { background: radial-gradient(circle at 30% 30%, #d4d4d4, #aaaaaa, #666666); }
-        .color-green { background: radial-gradient(circle at 30% 30%, #d4f77c, #b0d840, #6c8a16); color: #222; }
-        .color-green span { text-shadow: 1px 1px 0px rgba(255,255,255,0.6); }
-    </style>
+    </script>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4 font-sans text-gray-800">
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950 min-h-screen flex items-center justify-center p-4 font-sans text-gray-800 dark:text-gray-200 transition-colors duration-300">
 
-    <div class="max-w-2xl w-full bg-white rounded-3xl shadow-xl overflow-hidden p-4 sm:p-8 text-center border border-gray-100">
+    <!-- 테마 토글 버튼 -->
+    <button id="theme-toggle" class="fixed top-4 right-4 p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg hover:scale-110 transition-transform duration-200 z-50 border border-gray-100 dark:border-gray-700">
+        <svg id="theme-toggle-dark-icon" class="hidden w-6 h-6 text-gray-800 dark:text-gray-200" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+        <svg id="theme-toggle-light-icon" class="hidden w-6 h-6 text-yellow-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+    </button>
+
+    <div class="max-w-2xl w-full bg-white dark:bg-gray-900 rounded-3xl shadow-xl overflow-hidden p-4 sm:p-8 text-center border border-gray-100 dark:border-gray-800 transition-colors duration-300">
         
         <!-- 헤더 섹션 -->
         <div class="mb-8">
-            <h1 class="text-3xl font-extrabold text-indigo-900 mb-2">행운의 로또 번호</h1>
-            <p class="text-gray-500 text-sm">버튼을 눌러 이번 주 행운의 번호를 확인하세요!</p>
+            <h1 class="text-3xl font-extrabold text-indigo-900 dark:text-indigo-300 mb-2">행운의 로또 번호</h1>
+            <p class="text-gray-500 dark:text-gray-400 text-sm">버튼을 눌러 이번 주 행운의 번호를 확인하세요!</p>
         </div>
 
         <!-- 번호 표시 영역 -->
         <div id="numbers-container" class="flex flex-wrap justify-center items-center gap-1 sm:gap-2 md:gap-3 min-h-[80px] mb-8 py-2">
             <!-- 번호가 여기에 생성됩니다. 처음에는 비어있거나 안내 문구 표시 -->
-            <div class="text-gray-400 flex items-center h-14">
+            <div class="text-gray-400 dark:text-gray-500 flex items-center h-14">
                 아직 추첨된 번호가 없습니다.
             </div>
         </div>
 
         <!-- 추첨 버튼 -->
-        <button id="generate-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 active:translate-y-0 text-lg">
+        <button id="generate-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600 text-white font-bold py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 active:translate-y-0 text-lg">
             번호 추첨하기 🍀
         </button>
 
         <!-- 누적 결과 표시 영역 -->
-        <div id="history-section" class="mt-8 hidden text-left border-t border-gray-200 pt-6">
-            <h2 class="text-xl font-bold text-gray-700 mb-4">이전 추첨 기록</h2>
+        <div id="history-section" class="mt-8 hidden text-left border-t border-gray-200 dark:border-gray-800 pt-6">
+            <h2 class="text-xl font-bold text-gray-700 dark:text-gray-300 mb-4">이전 추첨 기록</h2>
             <div id="history-list" class="flex flex-col gap-3 max-h-60 overflow-y-auto pr-2">
                 <!-- 기록이 여기에 추가됩니다 -->
             </div>
@@ -83,145 +52,6 @@
 
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const generateBtn = document.getElementById('generate-btn');
-            const numbersContainer = document.getElementById('numbers-container');
-            const historySection = document.getElementById('history-section');
-            const historyList = document.getElementById('history-list');
-
-            let currentDraw = null; // 현재 추첨된 번호 저장용
-            let drawCount = 0; // 추첨 회차
-
-            // 번호에 따른 공 색상 클래스 반환 함수
-            function getBallColorClass(number) {
-                if (number <= 10) return 'color-yellow';
-                if (number <= 20) return 'color-blue';
-                if (number <= 30) return 'color-red';
-                if (number <= 40) return 'color-gray';
-                return 'color-green';
-            }
-
-            // 로또 번호 생성 함수 (1~45 중 중복 없는 7개 숫자)
-            function generateLottoNumbers() {
-                const numbers = new Set();
-                while (numbers.size < 7) { // 보너스 번호 포함 총 7개 추출
-                    const randomNum = Math.floor(Math.random() * 45) + 1;
-                    numbers.add(randomNum);
-                }
-                const numbersArray = Array.from(numbers);
-                
-                // 처음 6개는 메인 번호(오름차순 정렬), 마지막 1개는 보너스 번호
-            const mainNumbers = numbersArray.slice(0, 6).sort((a, b) => a - b);
-            const bonusNumber = numbersArray[6];
-            
-            return { mainNumbers, bonusNumber };
-        }
-
-        // 기록에 추가하는 함수
-        function addDrawToHistory(drawData, round) {
-            historySection.classList.remove('hidden');
-            
-            const historyRow = document.createElement('div');
-            historyRow.className = 'flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-100 shadow-sm';
-            
-            const roundTag = document.createElement('span');
-            roundTag.className = 'text-sm font-bold text-indigo-500 w-12 shrink-0';
-            roundTag.textContent = `${round}회차`;
-            
-            const ballsContainer = document.createElement('div');
-            ballsContainer.className = 'flex items-center gap-1 sm:gap-2 flex-1 justify-center';
-            
-            const itemsToRender = [...drawData.mainNumbers, '+', drawData.bonusNumber];
-            
-            itemsToRender.forEach(item => {
-                if (item === '+') {
-                    const plusSign = document.createElement('span');
-                    plusSign.className = 'text-gray-400 font-bold text-xs sm:text-sm mx-0.5 sm:mx-1 shrink-0';
-                    plusSign.textContent = '+';
-                    ballsContainer.appendChild(plusSign);
-                } else {
-                    const ball = document.createElement('div');
-                    const colorClass = getBallColorClass(item);
-                    // 기록용 공은 크기를 작게 설정하고 애니메이션 제거
-                    ball.className = `ball ${colorClass} w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold text-white shrink-0`;
-                    ball.style.animation = 'none'; // 애니메이션 제거
-                    ball.style.opacity = '1'; // 항상 보이게
-                    
-                    const textSpan = document.createElement('span');
-                    textSpan.textContent = item;
-                    ball.appendChild(textSpan);
-                    
-                    ballsContainer.appendChild(ball);
-                }
-            });
-
-            historyRow.appendChild(roundTag);
-            historyRow.appendChild(ballsContainer);
-            
-            // 최신 기록이 위로 올라오도록 prepend
-            historyList.prepend(historyRow);
-        }
-
-        // 버튼 클릭 이벤트 처리
-        generateBtn.addEventListener('click', () => {
-            // 이전 추첨 결과가 있다면 기록으로 이동
-            if (currentDraw) {
-                addDrawToHistory(currentDraw, drawCount);
-            }
-
-            // 기존 내용 지우기
-            numbersContainer.innerHTML = '';
-            
-            // 버튼 비활성화 (애니메이션 도중 중복 클릭 방지)
-            generateBtn.disabled = true;
-            generateBtn.classList.add('opacity-75', 'cursor-not-allowed');
-            generateBtn.textContent = '추첨 중...';
-
-            drawCount++;
-            currentDraw = generateLottoNumbers();
-            
-            // 화면에 순차적으로 표시할 배열 (메인 6개 + 더하기 기호 + 보너스 1개)
-            const itemsToRender = [...currentDraw.mainNumbers, '+', currentDraw.bonusNumber];
-
-            // 요소를 하나씩 순차적으로 화면에 표시 (애니메이션 효과)
-            itemsToRender.forEach((item, index) => {
-                setTimeout(() => {
-                    if (item === '+') {
-                            // 더하기(+) 기호 생성
-                            const plusSign = document.createElement('div');
-                            plusSign.className = 'text-gray-400 font-bold text-lg min-[380px]:text-xl sm:text-2xl md:text-3xl mx-1 sm:mx-2 shrink-0 opacity-0';
-                            plusSign.style.animation = 'popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
-                            plusSign.textContent = '+';
-                        numbersContainer.appendChild(plusSign);
-                    } else {
-                        // 로또 공 생성
-                        const ball = document.createElement('div');
-                        const colorClass = getBallColorClass(item);
-                        
-                        // 아주 작은 모바일 화면에서도 한 줄에 나오도록 최적화 (min-width: 380px 기준으로 크기 확대)
-                        ball.className = `ball ${colorClass} w-8 h-8 min-[380px]:w-10 min-[380px]:h-10 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-xs min-[380px]:text-base sm:text-xl md:text-2xl font-bold text-white shrink-0`;
-                        
-                        // 텍스트를 감싸는 span 요소 추가 (그림자 효과 적용을 위해)
-                        const textSpan = document.createElement('span');
-                        textSpan.textContent = item;
-                        ball.appendChild(textSpan);
-                        
-                        numbersContainer.appendChild(ball);
-                    }
-
-                    // 마지막 요소(보너스 공)가 표시된 후 버튼 다시 활성화
-                    if (index === itemsToRender.length - 1) {
-                            setTimeout(() => {
-                                generateBtn.disabled = false;
-                                generateBtn.classList.remove('opacity-75', 'cursor-not-allowed');
-                                generateBtn.innerHTML = '다시 추첨하기 🔄';
-                            }, 300);
-                        }
-                    }, index * 150); // 0.15초 간격으로 하나씩 나타남
-                });
-            });
-        });
-    </script>
+    <script src="main.js"></script>
 </body>
 </html>

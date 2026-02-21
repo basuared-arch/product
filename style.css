@@ -1,1 +1,41 @@
-/* Add styles here */
+/* 공이 나타날 때의 애니메이션 효과 */
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) translateY(20px);
+    }
+    70% {
+        transform: scale(1.1) translateY(-5px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.ball {
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    opacity: 0; /* 초기 상태는 투명하게 */
+    position: relative;
+    /* 3D 입체감을 위한 그림자 효과 적용 */
+    box-shadow: 
+        inset -5px -5px 10px rgba(0,0,0,0.3), 
+        inset 3px 3px 8px rgba(255,255,255,0.6),
+        2px 4px 6px rgba(0,0,0,0.3);
+}
+
+/* 텍스트 가독성 향상을 위한 내부 요소 */
+.ball span {
+    position: relative;
+    z-index: 10;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+}
+
+/* 공 색상 정의 (3D 그라데이션 적용) */
+.color-yellow { background: radial-gradient(circle at 30% 30%, #ffe359, #fbc400, #c49400); color: #222; }
+.color-yellow span { text-shadow: 1px 1px 0px rgba(255,255,255,0.6); }
+.color-blue { background: radial-gradient(circle at 30% 30%, #8de0ff, #69c8f2, #248abf); }
+.color-red { background: radial-gradient(circle at 30% 30%, #ff9e9e, #ff7272, #cc2929); }
+.color-gray { background: radial-gradient(circle at 30% 30%, #d4d4d4, #aaaaaa, #666666); }
+.color-green { background: radial-gradient(circle at 30% 30%, #d4f77c, #b0d840, #6c8a16); color: #222; }
+.color-green span { text-shadow: 1px 1px 0px rgba(255,255,255,0.6); }
